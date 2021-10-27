@@ -1616,6 +1616,9 @@ export async function activate(context: vscode.ExtensionContext) {
               "idf.espMdfPath",
               workspaceRoot
             ) as string;
+            const matterPathDir = idfConf.readParameter(
+              "idf.espMatterPath"
+            ) as string;
 
             const pickItems = [];
             const doesIdfPathExists = await utils.dirExistPromise(espIdfPath);
@@ -1640,6 +1643,16 @@ export async function activate(context: vscode.ExtensionContext) {
                 description: "ESP-MDF",
                 label: `Use current ESP-MDF (${espMdfPath})`,
                 target: espMdfPath,
+              });
+            }
+            const doesMatterPathExists = await utils.dirExistPromise(
+              matterPathDir
+            );
+            if (doesMatterPathExists) {
+              pickItems.push({
+                description: "ESP-Matter",
+                label: `Use current ESP-Matter (${matterPathDir})`,
+                target: matterPathDir,
               });
             }
             const examplesFolder = await vscode.window.showQuickPick(

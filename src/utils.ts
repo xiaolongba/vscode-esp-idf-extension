@@ -865,6 +865,25 @@ export function appendIdfAndToolsToPath(curWorkspace: vscode.Uri) {
   const matterPathDir = idfConf.readParameter("idf.espMatterPath");
   modifiedEnv.ESP_MATTER_PATH = matterPathDir || process.env.ESP_MATTER_PATH;
 
+  let pathToPigweed: string;
+
+  if (modifiedEnv.ESP_MATTER_PATH) {
+    pathToPigweed = path.join(
+      modifiedEnv.ESP_MATTER_PATH,
+      "connectedhomeip",
+      "connectedhomeip",
+      ".environment",
+      "cipd",
+      "pigweed"
+    );
+    modifiedEnv.ESP_MATTER_DEVICE_PATH = path.join(
+      modifiedEnv.ESP_MATTER_PATH,
+      "device_hal",
+      "device",
+      "m5stack"
+    );
+  }
+
   modifiedEnv.PYTHON =
     `${idfConf.readParameter("idf.pythonBinPath", curWorkspace)}` ||
     `${process.env.PYTHON}` ||
@@ -906,6 +925,10 @@ export function appendIdfAndToolsToPath(curWorkspace: vscode.Uri) {
   if (pathToGitDir) {
     modifiedEnv[pathNameInEnv] =
       pathToGitDir + path.delimiter + modifiedEnv[pathNameInEnv];
+  }
+  if (pathToPigweed) {
+    modifiedEnv[pathNameInEnv] =
+      pathToPigweed + path.delimiter + modifiedEnv[pathNameInEnv];
   }
   modifiedEnv[pathNameInEnv] =
     path.dirname(modifiedEnv.PYTHON) +
